@@ -1,4 +1,4 @@
-# Sentence Transformer Embeddings and Similarity Search
+# Text Embeddings and Similarity Search
 
 ## Setup
 To set up the project, follow these steps:
