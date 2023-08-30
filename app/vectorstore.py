@@ -1,8 +1,6 @@
 import os
 from typing import List
 import pinecone
-import random
-import itertools
 from embeddings import embed_text
 
 class VectorStore:
