@@ -22,19 +22,8 @@ class VectorStore:
             pinecone.create_index(self.index_name, dimension=dimensions, metric="dotproduct")
             print(f"Created index: {self.index_name}")
 
-    @staticmethod
-    def __chunks(iterable, batch_size=100):
-        """A helper function to break an iterable into chunks of size batch_size."""
-        it = iter(iterable)
-        chunk = tuple(itertools.islice(it, batch_size))
-        while chunk:
-            yield chunk
-            chunk = tuple(itertools.islice(it, batch_size))
-
-    def batch_insert_vectors(self, data):
-        """Method to batch insert vectors."""
-        for ids_vectors_chunk in self.__chunks(data, batch_size=100):
-            self.index.upsert(vectors=ids_vectors_chunk)
+    def upsert_vectors(self, vectors):
+        self.index.upsert(vectors=vectors)
 
     def query_vector(self, vector: List[float], top_k):
         """Method to query a vector and get top_k values back."""

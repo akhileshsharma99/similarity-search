@@ -20,25 +20,21 @@ def get_data(text):
     if not text:
         return pd.DataFrame()
     
-    raw_data = vs.query_text(text)
+    raw_data = vs.query_text(text, 15)
     
-    print(raw_data)
     # Preprocess the data   
     data = []
     for item in raw_data['matches']:
         data.append({
-            'id': item['id'],
-            'Similiarity': item['score'],
+            'ID': item['id'],
             'ProductId': item['metadata']['ProductId'],
-            'Score': item['metadata']['Score'],
-            'Text': item['metadata']['Text']
+            'Similiarity': item['score'],
+            'Text': item['metadata']['Text'],
+            'Vector': item['values']
         })
     
     df = pd.DataFrame(data)
-    df.reset_index(drop=True, inplace=True)
     return df
 
 if __name__ == "__main__":
-    # raw_data = vs.query_text('hi')
-    # print(raw_data)
     main()

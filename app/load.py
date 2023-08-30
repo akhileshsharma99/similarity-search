@@ -1,25 +1,38 @@
 import os
 import csv
+import logging
 from embeddings import embed_text
 from vectorstore import VectorStore
 
-def load_csv(file_path: str, column_name: str):
-    objs = []
-    with open(file_path, 'r') as file:
-        reader = csv.DictReader(file)
-        for row in reader:
+logging.basicConfig(level=logging.ERROR)
+
+def load_csv_in_chunks(file_path: str, column_name: str, chunksize: int = 500):
+    logging.info('Starting to load CSV in chunks.')
+    with open(file_path, 'r') as f:
+        reader = csv.DictReader(f)
+        objs = []
+        for i, row in enumerate(reader):
+            if i > 0 and i % chunksize == 0:
+                yield objs
+                objs = []
             embeddings = embed_text(row[column_name])
             id = row.pop('Id')
             objs.append((id, embeddings, row))
-    return objs
+        logging.info(f'Loaded chunk with {len(objs)} rows.')
+        yield objs
     
 def main(index_name):
-    file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dataset/Reviews_10.csv')
-    data = load_csv(file_path, 'Text')
+    logging.info('Starting main function.')
     vs = VectorStore(index_name)
     vs.create_index(384)
-    vs.batch_insert_vectors(data)
-    print(f'Succesfully uploaded {len(data)} rows to {index_name}')
+
+    file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dataset/Reviews.csv')
+    for data in load_csv_in_chunks(file_path, 'Text', 50):
+        try:
+            vs.upsert_vectors(data)
+            logging.info(f'Succesfully uploaded {len(data)} rows to {index_name}')
+        except Exception as e:
+            logging.error(f'Failed to upload data to {index_name}. Error: {str(e)}')
 
 if __name__ == "__main__":
     index_name = 'lightning-talk'
