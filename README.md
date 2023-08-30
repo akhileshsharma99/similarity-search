@@ -27,24 +27,26 @@ To set the index for the main file, you need to change the `index_name` variable
 Now, when you run the application, it will use the new index you have set.
 
 ## Load data into pinecone
-To load data into the application, you need to modify the `load.py` file. Here is how you can do it:
+To load data into the application, you need to first download the dataset and then modify the `load.py` file. Here is how you can do it:
 
-1. Open the `load.py` file located in the `app` directory.
+1. Download the dataset from [here](https://www.kaggle.com/datasets/snap/amazon-fine-food-reviews) and add it to the `app/datasets` directory.
 
-2. Locate the line where the `file_path` is defined. The line should look like this:
+2. Open the `load.py` file located in the `app` directory.
+
+3. Locate the line where the `file_path` is defined. The line should look like this:
    ```python
    file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'dataset/Reviews.csv')
    ```
-3. Change `'dataset/Reviews.csv'` to the path of your CSV file relative to the `load.py` file.
+4. Change `'dataset/Reviews.csv'` to the path of your CSV file relative to the `load.py` file. If you have followed step 1, this should be `'datasets/your_downloaded_file.csv'`.
 
-4. Locate the line where the `index_name` is defined in the `if __name__ == "__main__"` block. The line should look like this:
+5. Locate the line where the `index_name` is defined in the `if __name__ == "__main__"` block. The line should look like this:
    ```python
    if __name__ == "__main__":
        index_name = 'lightning-talk'
    ```
-5. Change `'lightning-talk'` to the name of your index.
+6. Change `'lightning-talk'` to the name of your index.
 
-6. Save the changes and close the file.
+7. Save the changes and close the file.
 
 Now, when you run the `load.py` script, it will load the data from your CSV file into the specified index.
 
